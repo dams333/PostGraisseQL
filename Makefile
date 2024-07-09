@@ -9,6 +9,10 @@ SRCS		=	\
 							Page.cpp \
 						) \
 					) \
+					$(addprefix Database/, \
+						Database.cpp \
+						Table.cpp \
+					) \
 				)
 				
 
@@ -17,7 +21,7 @@ OBJS		=	$(addprefix build/, $(_OBJS))
 OBJS_DEPEND	=	${OBJS:.o=.d}
 
 CXX			=	clang++
-CXXFLAGS	=   -Wall -Wextra -Werror -std=c++20 -fsanitize=address,undefined -g3
+CXXFLAGS	=   -Wall -Wextra -Werror -std=c++17 -fsanitize=address,undefined -g3
 INCLUDE		=	-I includes/
 
 all		:	$(NAME)
