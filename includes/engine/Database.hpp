@@ -19,5 +19,7 @@ namespace engine {
 		Database& operator=(const Database& other);
 
 		~Database();
+
+		void createTable(std::string name);
 	};
 };

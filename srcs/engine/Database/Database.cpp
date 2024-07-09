@@ -31,3 +31,10 @@ Database::~Database() {
 		delete table;
 	}
 }
+
+void Database::createTable(std::string name) {
+	if (std::find_if(tables.begin(), tables.end(), [&name](Table* table) { return table->getName() == name; }) != tables.end()) {
+		throw std::runtime_error("Table already exists");
+	}
+	tables.push_back(Table::create(folderPath, name));
+}
