@@ -1,5 +1,7 @@
 #include "engine/File.hpp"
 
+using namespace engine;
+
 File::File(std::string path, uint8_t flags) : _path(path), _flags(flags), _fd(-1) {
 	int openFlags = O_SYNC;
 	if (flags & File::READ_FLAG && flags & File::WRITE_FLAG) {
