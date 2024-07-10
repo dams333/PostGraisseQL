@@ -5,6 +5,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "engine/Page.hpp"
+
 /*
 
 File structure
@@ -29,6 +31,9 @@ namespace engine {
 		int _fd;
 		uint32_t _pageCount;
 
+		void _seekToPage(uint32_t page);
+		void _write(Page* page, uint32_t pageId);
+
 	public:
 		File(std::string path, bool create = false);
 		File(std::string path, uint8_t flags, bool create = false);
@@ -37,5 +42,7 @@ namespace engine {
 		File& operator=(const File& file);
 
 		~File();
+
+		void insertEmptyPage();
 	};
 };

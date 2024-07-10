@@ -23,3 +23,13 @@ Page& Page::operator=(const Page& page) {
 Page::~Page() {
 	delete[] _data;
 }
+
+Page::Header Page::getDefaultHeader() {
+	Header header;
+	header.pdFlags = 0b00000000;
+	header.pdLower = sizeof(Header);
+	header.pdUpper = Page::PAGE_SIZE;
+	header.pdSpecial = Page::PAGE_SIZE;
+
+	return header;
+}

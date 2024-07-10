@@ -2,6 +2,8 @@
 
 #include <cstddef>
 #include <cstring>
+#include <stdexcept>
+#include <cstdint>
 
 /*
 
@@ -38,6 +40,13 @@ namespace engine {
 	class Page {
 	public:
 		const static size_t PAGE_SIZE = 4096;
+		typedef struct {
+			uint8_t pdFlags;
+			uint16_t pdLower;
+			uint16_t pdUpper;
+			uint16_t pdSpecial;
+		} Header;
+		static Header getDefaultHeader();
 
 	private:
 		char *_data;
@@ -49,5 +58,7 @@ namespace engine {
 		Page& operator=(const Page& page);
 
 		~Page();
+
+		char* data() { return _data; };
 	};
 };

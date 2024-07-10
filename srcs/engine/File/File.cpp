@@ -68,3 +68,32 @@ File::~File() {
 		close(_fd);
 	}
 }
+
+void File::_seekToPage(uint32_t page) {
+	if (lseek(_fd, sizeof(_pageCount) + page * Page::PAGE_SIZE, SEEK_SET) == -1) {
+		throw std::runtime_error("Failed to seek to page");
+	}
+}
+
+void File::_write(Page* page, uint32_t pageId) {
+	_seekToPage(pageId);
+	if (write(_fd, page->data(), Page::PAGE_SIZE) != Page::PAGE_SIZE) {
+		throw std::runtime_error("Failed to write page");
+	}
+}
+
+void File::insertEmptyPage() {
+	Page page;
+	Page::Header header = Page::getDefaultHeader();
+	memcpy(page.data(), &header, sizeof(header));
+	bzero(page.data() + sizeof(header), Page::PAGE_SIZE - sizeof(header));
+	_write(&page, _pageCount);
+
+	_pageCount++;
+	if (lseek(_fd, 0, SEEK_SET) == -1) {
+		throw std::runtime_error("Failed to seek to page count");
+	}
+	if (write(_fd, &_pageCount, sizeof(_pageCount)) != sizeof(_pageCount)) {
+		throw std::runtime_error("Failed to write page count");
+	}
+}

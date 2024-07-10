@@ -6,8 +6,6 @@ Table* Table::create(std::string folderPath, std::string name) {
 	std::string fileName = folderPath + "/" + name + ".table";
 	File *file = File::create(fileName, File::READ_FLAG | File::WRITE_FLAG);
 
-	std::cout << "Table " << name << " created" << std::endl;
-
 	return new Table(file, name);
 }
 
@@ -16,7 +14,10 @@ Table::Table(std::string fileName, std::string name) : name(name) {
 	std::cout << "Table " << name << " loaded from '" << fileName << "'" << std::endl;
 }
 
-Table::Table(File *file, std::string name) : file(file), name(name) {}
+Table::Table(File *file, std::string name) : file(file), name(name) {
+	file->insertEmptyPage();
+	std::cout << "Table " << name << " created" << std::endl;
+}
 
 Table::Table(const Table& other) {
 	*this = other;

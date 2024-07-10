@@ -2,7 +2,13 @@
 
 #include <string>
 #include <iostream>
+
 #include "engine/File.hpp"
+
+/*
+	For now, all tables use this format:
+	|index: int(32)|data: string(255)|
+*/
 
 namespace engine {
 	class Table {
