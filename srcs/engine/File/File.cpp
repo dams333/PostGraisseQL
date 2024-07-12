@@ -63,8 +63,24 @@ File& File::operator=(const File& file) {
 	return *this;
 }
 
+bool File::operator==(const File& file) {
+	return _path == file._path;
+}
+
 File::~File() {
 	if (_fd != -1) {
+		if (lseek(_fd, 0, SEEK_SET) == -1) {
+			std::cerr << "========================= FATAL ERROR =========================" << std::endl;
+			std::cerr << "Cannot delete file" << std::endl;
+			std::cerr << "Cannot seek to beginning of file" << std::endl;
+			std::cerr << "===============================================================" << std::endl;
+		}
+		if (write(_fd, &_pageCount, sizeof(_pageCount)) != sizeof(_pageCount)) {
+			std::cerr << "========================= FATAL ERROR =========================" << std::endl;
+			std::cerr << "Cannot delete file" << std::endl;
+			std::cerr << "Cannot write page count" << std::endl;
+			std::cerr << "===============================================================" << std::endl;
+		}
 		close(_fd);
 	}
 }
@@ -75,25 +91,31 @@ void File::_seekToPage(uint32_t page) {
 	}
 }
 
-void File::_write(Page* page, uint32_t pageId) {
-	_seekToPage(pageId);
-	if (write(_fd, page->data(), Page::PAGE_SIZE) != Page::PAGE_SIZE) {
+void File::readFromFile(size_t pageIndex, uint8_t* buffer) {
+	if (pageIndex >= _pageCount) {
+		throw std::runtime_error("Page index out of bounds");
+	}
+	_seekToPage(pageIndex);
+	if (read(_fd, buffer, Page::PAGE_SIZE) != Page::PAGE_SIZE) {
+		throw std::runtime_error("Failed to read page");
+	}
+}
+
+void File::writeToFile(size_t pageIndex, uint8_t* buffer) {
+	if (pageIndex >= _pageCount) {
+		throw std::runtime_error("Page index out of bounds");
+	}
+	_seekToPage(pageIndex);
+	if (write(_fd, buffer, Page::PAGE_SIZE) != Page::PAGE_SIZE) {
 		throw std::runtime_error("Failed to write page");
 	}
 }
 
-void File::insertEmptyPage() {
-	Page page;
-	Page::Header header = Page::getDefaultHeader();
-	memcpy(page.data(), &header, sizeof(header));
-	bzero(page.data() + sizeof(header), Page::PAGE_SIZE - sizeof(header));
-	_write(&page, _pageCount);
-
+void File::appendEmptyPage() {
 	_pageCount++;
-	if (lseek(_fd, 0, SEEK_SET) == -1) {
-		throw std::runtime_error("Failed to seek to page count");
+	if (lseek(_fd, 0, SEEK_END) == -1) {
+		throw std::runtime_error("Failed to seek to end of file");
 	}
-	if (write(_fd, &_pageCount, sizeof(_pageCount)) != sizeof(_pageCount)) {
-		throw std::runtime_error("Failed to write page count");
-	}
+	static const uint8_t *defaultPage = Page::getDefaultPage();
+	write(_fd, defaultPage, Page::PAGE_SIZE);
 }

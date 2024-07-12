@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <fcntl.h>
 #include <unistd.h>
+#include <iostream>
 
 #include "engine/Page.hpp"
 
@@ -32,7 +33,6 @@ namespace engine {
 		uint32_t _pageCount;
 
 		void _seekToPage(uint32_t page);
-		void _write(Page* page, uint32_t pageId);
 
 	public:
 		File(std::string path, bool create = false);
@@ -40,9 +40,13 @@ namespace engine {
 		File(const File& file);
 
 		File& operator=(const File& file);
+		bool operator==(const File& file);
 
 		~File();
 
-		void insertEmptyPage();
+		void readFromFile(size_t pageIndex, uint8_t* buffer);
+		void writeToFile(size_t pageIndex, uint8_t* buffer);
+
+		void appendEmptyPage();
 	};
 };

@@ -5,6 +5,7 @@ SRCS		=	\
 					main.cpp \
 					$(addprefix File/, \
 						File.cpp \
+						FilesManager.cpp \
 						$(addprefix Pages/, \
 							Page.cpp \
 						) \

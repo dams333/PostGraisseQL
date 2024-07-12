@@ -21,6 +21,7 @@ Database& Database::operator=(const Database& other) {
 		return *this;
 	}
 
+	filesManager = other.filesManager;
 	folderPath = other.folderPath;
 	tables = other.tables;
 	return *this;

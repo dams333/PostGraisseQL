@@ -15,7 +15,7 @@ Table::Table(std::string fileName, std::string name) : name(name) {
 }
 
 Table::Table(File *file, std::string name) : file(file), name(name) {
-	file->insertEmptyPage();
+	file->appendEmptyPage();
 	std::cout << "Table " << name << " created" << std::endl;
 }
 

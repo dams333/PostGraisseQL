@@ -46,19 +46,21 @@ namespace engine {
 			uint16_t pdUpper;
 			uint16_t pdSpecial;
 		} Header;
-		static Header getDefaultHeader();
+
+		static uint8_t *getDefaultPage();
 
 	private:
-		char *_data;
+		uint8_t *_data;
 
 	public:
 		Page();
+		Page(uint8_t* data);
 		Page(const Page& page);
 
 		Page& operator=(const Page& page);
 
 		~Page();
 
-		char* data() { return _data; };
+		uint8_t* data();
 	};
 };

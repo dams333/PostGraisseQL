@@ -2,7 +2,9 @@
 
 using namespace engine;
 
-Page::Page() : _data(new char[Page::PAGE_SIZE]) {}
+Page::Page(): _data(nullptr) {}
+
+Page::Page(uint8_t* data): _data(data) {}
 
 Page::Page(const Page& page) {
 	*this = page;
@@ -13,23 +15,26 @@ Page& Page::operator=(const Page& page) {
 		return *this;
 	}
 
-	delete[] _data;
-	_data = new char[Page::PAGE_SIZE];
-	memcpy(_data, page._data, Page::PAGE_SIZE);
+	_data = page._data;
 
 	return *this;
 }
 
-Page::~Page() {
-	delete[] _data;
+Page::~Page() {}
+
+uint8_t *Page::getDefaultPage() {
+	static uint8_t defaultPage[Page::PAGE_SIZE] = {0};
+	Header *header = (Header*)defaultPage;
+	header->pdFlags = 0;
+	header->pdLower = sizeof(Header);
+	header->pdUpper = Page::PAGE_SIZE;
+	header->pdSpecial = Page::PAGE_SIZE;
+	return defaultPage;
 }
 
-Page::Header Page::getDefaultHeader() {
-	Header header;
-	header.pdFlags = 0b00000000;
-	header.pdLower = sizeof(Header);
-	header.pdUpper = Page::PAGE_SIZE;
-	header.pdSpecial = Page::PAGE_SIZE;
-
-	return header;
+uint8_t *Page::data() {
+	if (_data == nullptr) {
+		throw std::runtime_error("Page data is null");
+	}
+	return _data;
 }

@@ -6,11 +6,13 @@
 #include <iostream>
 
 #include "engine/Table.hpp"
+#include "engine/FilesManager.hpp"
 
 namespace engine {
 	class Database {
 	private:
 		std::string folderPath;
+		FilesManager filesManager;
 		std::vector<Table*> tables;
 	public:
 		Database(std::string folderPath);
