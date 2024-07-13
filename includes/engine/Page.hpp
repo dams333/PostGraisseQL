@@ -52,6 +52,8 @@ namespace engine {
 
 		static uint8_t *getDefaultPage();
 
+		static bool canTupleFitInPage(size_t tupleSize, Header* header);
+
 	private:
 		uint8_t *_data;
 
@@ -69,7 +71,6 @@ namespace engine {
 		uint8_t* data();
 		Header* header() const { return (Header*)_data; };
 
-		bool canTupleFit(size_t tupleSize) const;
 		void insertTuple(const uint8_t* tuple, size_t tupleSize);
 	};
 };

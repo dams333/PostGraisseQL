@@ -2,8 +2,13 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 #include "engine/File.hpp"
+#include "engine/ITupleElementHandler.hpp"
+#include "engine/IntTupleElementHandler.hpp"
+#include "engine/StringTupleElementHandler.hpp"
+#include "engine/FilesManager.hpp"
 
 /*
 	For now, all tables use this format:
@@ -13,15 +18,17 @@
 namespace engine {
 	class Table {
 	public:
-		static Table* create(std::string folderPath, std::string name);
+		static Table* create(std::string folderPath, std::string name, FilesManager *filesManager);
 
 	private:
 		File *file;
 		std::string name;
+		std::vector<ITupleElementHandler *> structure;
+		FilesManager *filesManager;
 	
 	public:
-		Table(std::string fileName, std::string name);
-		Table(File *file, std::string name);
+		Table(std::string fileName, std::string name, FilesManager *filesManager);
+		Table(File *file, std::string name, FilesManager *filesManager);
 		Table(const Table& other);
 
 		Table& operator=(const Table& other);
@@ -30,5 +37,7 @@ namespace engine {
 
 		std::string getName() const { return name; };
 		File* getFile() const { return file; };
+
+		void insertTuple(std::vector<void *> tuple);
 	};
 };

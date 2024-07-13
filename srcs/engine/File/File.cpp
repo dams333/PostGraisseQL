@@ -126,3 +126,18 @@ void File::appendEmptyPage() {
 	static const uint8_t *defaultPage = Page::getDefaultPage();
 	write(_fd, defaultPage, Page::PAGE_SIZE);
 }
+
+size_t File::getOrCreatePageForTuple(size_t tupleSize) {
+	for (size_t i = 0; i < _pageCount; i++) {
+		Page::Header header;
+		_seekToPage(i);
+		if (read(_fd, &header, sizeof(header)) != sizeof(header)) {
+			throw std::runtime_error("Failed to read page header");
+		}
+		if (Page::canTupleFitInPage(tupleSize, &header)) {
+			return i;
+		}
+	}
+	appendEmptyPage();
+	return _pageCount - 1;
+}

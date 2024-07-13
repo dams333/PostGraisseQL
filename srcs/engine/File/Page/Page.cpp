@@ -39,17 +39,17 @@ uint8_t *Page::data() {
 	return _data;
 }
 
-size_t Page::_getFreeSpaceSize() const {
-	return header()->pdUpper - header()->pdLower;
+size_t getFreeSpaceSize(Page::Header* header) {
+	return header->pdUpper - header->pdLower;
 }
 
-bool Page::canTupleFit(size_t tupleSize) const {
-	Header *header = (Header*)_data;
+//TODO: implements lock page when full
+bool Page::canTupleFitInPage(size_t tupleSize, Header* header) {
 	if (header->pdFlags & FLAG_PAGE_FULL) {
 		return false;
 	}
 	size_t usedSpace = tupleSize + LINE_POINTER_SIZE;
-	size_t freeSpace = _getFreeSpaceSize();
+	size_t freeSpace = getFreeSpaceSize(header);
 	if (freeSpace < usedSpace) {
 		return false;
 	}
@@ -63,7 +63,7 @@ bool Page::canTupleFit(size_t tupleSize) const {
 void Page::insertTuple(const uint8_t* tuple, size_t tupleSize) {
 	// not optimal, we dont have to call insertTuple if canTupleFit is false
 	// TODO: remove this check, just used for programming
-	if (!canTupleFit(tupleSize)) {
+	if (!canTupleFitInPage(tupleSize, header())) {
 		throw std::runtime_error("Tuple does not fit in page");
 	}
 	Header *header = (Header*)_data;

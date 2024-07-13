@@ -50,5 +50,7 @@ namespace engine {
 		void writeToFile(size_t pageIndex, uint8_t* buffer);
 
 		void appendEmptyPage();
+		
+		size_t getOrCreatePageForTuple(size_t tupleSize);
 	};
 };
