@@ -12,7 +12,7 @@ namespace engine {
 	class Database {
 	private:
 		std::string folderPath;
-		FilesManager filesManager;
+		FilesManager *filesManager;
 		std::vector<Table*> tables;
 	public:
 		Database(std::string folderPath);
@@ -22,6 +22,9 @@ namespace engine {
 
 		~Database();
 
+		FilesManager& getFilesManager() { return *filesManager; }
+
 		void createTable(std::string name);
+		Table* getTable(std::string name);
 	};
 };

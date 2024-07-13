@@ -62,5 +62,6 @@ namespace engine {
 		~Page();
 
 		uint8_t* data();
+		Header* header() const { return (Header*)_data; };
 	};
 };

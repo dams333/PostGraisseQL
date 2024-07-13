@@ -29,5 +29,6 @@ namespace engine {
 		~Table();
 
 		std::string getName() const { return name; };
+		File* getFile() const { return file; };
 	};
 };
