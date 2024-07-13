@@ -55,12 +55,7 @@ Page *FilesManager::_getPage(File *file, size_t pageIndex, uint8_t flags) {
 
 	// check if there is a non used buffer
 	if (_usedBuffers < PAGE_COUNT) {
-		for (size_t i = 0; i < PAGE_COUNT; i++) {
-			if (_pageDescriptors[i].file == nullptr) {
-				_usedBuffers++;
-				return _useBuffer(file, pageIndex, flags, i);
-			}
-		}
+		return _useBuffer(file, pageIndex, flags, _usedBuffers++);
 	}
 
 	// find first non referenced buffer
