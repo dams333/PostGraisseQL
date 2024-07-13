@@ -1,20 +1,8 @@
-NAME		=	postgraisse
+NAME		=	pageexp
 
 SRCS		=	\
-				$(addprefix engine/, \
-					main.cpp \
-					$(addprefix File/, \
-						File.cpp \
-						FilesManager.cpp \
-						$(addprefix Pages/, \
-							Page.cpp \
-						) \
-					) \
-					$(addprefix Database/, \
-						Database.cpp \
-						Table.cpp \
-					) \
-				)
+				main.cpp \
+				Page.cpp
 				
 
 _OBJS		=	${SRCS:.cpp=.o}
@@ -45,13 +33,5 @@ fclean	:	clean
 	rm -f ${NAME}
 
 re		:	fclean ${NAME}
-
-pageexplorer:
-	@mkdir -p bin
-	make -C tools/PageExplorer
-
-tools: pageexplorer
-	@mkdir -p bin
-	@cp tools/PageExplorer/pageexp bin/
 
 .PHONY	:	all clean fclean re
