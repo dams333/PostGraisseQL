@@ -2,6 +2,9 @@
 #include "engine/Table.hpp"
 #include "engine/Page.hpp"
 
+#include "engine/IntTupleElementHandler.hpp"
+#include "engine/StringTupleElementHandler.hpp"
+
 using namespace engine;
 
 int main() {

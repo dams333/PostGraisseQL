@@ -6,8 +6,12 @@ SRCS		=	\
 					$(addprefix File/, \
 						File.cpp \
 						FilesManager.cpp \
-						$(addprefix Pages/, \
+						$(addprefix Page/, \
 							Page.cpp \
+							$(addprefix Tuple/, \
+								IntTupleElementHandler.cpp \
+								StringTupleElementHandler.cpp \
+							) \
 						) \
 					) \
 					$(addprefix Database/, \
