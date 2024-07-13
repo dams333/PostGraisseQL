@@ -1,4 +1,5 @@
 #include "engine/Database.hpp"
+#include "engine/Debug.hpp"
 
 using namespace engine;
 
@@ -9,7 +10,9 @@ Database::Database(std::string folderPath) : folderPath(folderPath), filesManage
 		}
 	}
 
-	std::cout << "Database loaded from '" << folderPath << "'" << std::endl;
+	#ifdef DEBUG_DB
+		std::cout << "DB | Database loaded from '" << folderPath << "'" << std::endl;
+	#endif
 }
 
 Database::Database(const Database& other) {

@@ -1,4 +1,5 @@
 #include "engine/FilesManager.hpp"
+#include "engine/Debug.hpp"
 
 using namespace engine;
 
@@ -35,6 +36,9 @@ FilesManager::~FilesManager() {
 
 Page *FilesManager::_useBuffer(File *file, size_t pageIndex, uint8_t flags, size_t bufferIndex) {
 	if (_pageDescriptors[bufferIndex].flags & PAGE_DIRTY) {
+		#ifdef DEBUG_IO
+			std::cout << "IO | Replaced cache " << _bufferPointer << " is dirty, write to DISK" << std::endl;
+		#endif
 		_pageDescriptors[bufferIndex].file->writeToFile(_pageDescriptors[bufferIndex].pageIndex, _buffers[bufferIndex]);
 	}
 	_pageDescriptors[bufferIndex].file = file;
@@ -48,6 +52,9 @@ Page *FilesManager::_getPage(File *file, size_t pageIndex, uint8_t flags) {
 	// Check if page is already in cache
 	for (size_t i = 0; i < PAGE_COUNT; i++) {
 		if (_pageDescriptors[i].file == file && _pageDescriptors[i].pageIndex == pageIndex) {
+			#ifdef DEBUG_IO
+				std::cout << "IO | Read from CACHE " << i << " page " << pageIndex << " from disk file " << file->getPath() << std::endl;
+			#endif
 			_pageDescriptors[i].flags |= flags;
 			return new Page(_buffers[i]);
 		}
@@ -55,12 +62,18 @@ Page *FilesManager::_getPage(File *file, size_t pageIndex, uint8_t flags) {
 
 	// check if there is a non used buffer
 	if (_usedBuffers < PAGE_COUNT) {
+		#ifdef DEBUG_IO
+			std::cout << "IO | Store in CACHE " << _usedBuffers << " page " << pageIndex << " from DISK file " << file->getPath() << std::endl;
+		#endif
 		return _useBuffer(file, pageIndex, flags, _usedBuffers++);
 	}
 
 	// find first non referenced buffer
 	while (true) {
 		if (!(_pageDescriptors[_bufferPointer].flags & PAGE_REFERENCED)) {
+			#ifdef DEBUG_IO
+				std::cout << "IO | Replace in CACHE " << _bufferPointer << " page " << _pageDescriptors[_bufferPointer].pageIndex << " from DISK file " << _pageDescriptors[_bufferPointer].file->getPath() << " with page " << pageIndex << " from disk file " << file->getPath() << std::endl;
+			#endif
 			return _useBuffer(file, pageIndex, flags, _bufferPointer);
 		}
 		_pageDescriptors[_bufferPointer].flags &= ~PAGE_REFERENCED;

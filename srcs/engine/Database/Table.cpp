@@ -1,4 +1,5 @@
 #include "engine/Table.hpp"
+#include "engine/Debug.hpp"
 
 using namespace engine;
 
@@ -11,12 +12,16 @@ Table* Table::create(std::string folderPath, std::string name) {
 
 Table::Table(std::string fileName, std::string name) : name(name) {
 	file = new File(fileName, File::READ_FLAG | File::WRITE_FLAG, false);
-	std::cout << "Table " << name << " loaded from '" << fileName << "'" << std::endl;
+	#ifdef DEBUG_DB
+		std::cout << "DB | Table " << name << " loaded from '" << fileName << "'" << std::endl;
+	#endif
 }
 
 Table::Table(File *file, std::string name) : file(file), name(name) {
 	file->appendEmptyPage();
-	std::cout << "Table " << name << " created" << std::endl;
+	#ifdef DEBUG_DB
+		std::cout << "DB | Table " << name << " created" << std::endl;
+	#endif
 }
 
 Table::Table(const Table& other) {

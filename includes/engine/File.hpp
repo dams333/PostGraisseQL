@@ -44,6 +44,8 @@ namespace engine {
 
 		~File();
 
+		std::string getPath() const { return _path; }
+
 		void readFromFile(size_t pageIndex, uint8_t* buffer);
 		void writeToFile(size_t pageIndex, uint8_t* buffer);
 

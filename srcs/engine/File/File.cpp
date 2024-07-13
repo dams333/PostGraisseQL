@@ -1,4 +1,5 @@
 #include "engine/File.hpp"
+#include "engine/Debug.hpp"
 
 using namespace engine;
 
@@ -99,6 +100,9 @@ void File::readFromFile(size_t pageIndex, uint8_t* buffer) {
 	if (read(_fd, buffer, Page::PAGE_SIZE) != Page::PAGE_SIZE) {
 		throw std::runtime_error("Failed to read page");
 	}
+	#ifdef DEBUG_IO
+		std::cout << "IO | Read page " << pageIndex << " from DISK file " << _path << std::endl;
+	#endif
 }
 
 void File::writeToFile(size_t pageIndex, uint8_t* buffer) {
@@ -109,6 +113,9 @@ void File::writeToFile(size_t pageIndex, uint8_t* buffer) {
 	if (write(_fd, buffer, Page::PAGE_SIZE) != Page::PAGE_SIZE) {
 		throw std::runtime_error("Failed to write page");
 	}
+	#ifdef DEBUG_IO
+		std::cout << "IO | Write page " << pageIndex << " to DISK file " << _path << std::endl;
+	#endif
 }
 
 void File::appendEmptyPage() {
