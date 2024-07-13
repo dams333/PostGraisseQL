@@ -12,11 +12,17 @@ int main() {
 		Table* table = db.getTable("table1");
 		FilesManager& filesManager = db.getFilesManager();
 		Page* page = filesManager.getMutablePage(table->getFile(), 0);
-		Page::Header* header = page->header();
-		uint8_t* data = page->data() + header->pdLower;
-		data[0] = 0x42;
-		data[1] = 0x43;
-		data[2] = 0x44;
+
+		uint8_t tuple[10];
+		for (size_t i = 0; i < 10; i++) {
+			tuple[i] = i;
+		}
+
+		if (!page->canTupleFit(10)) {
+			std::cerr << "Tuple can't fit" << std::endl;
+			return 1;
+		}
+		page->insertTuple(tuple, 10);
 	} catch (const std::exception& e) {
 		std::cerr << "================= FATAL =================" << std::endl;
 		std::cerr << "ERROR: " << e.what() << std::endl;

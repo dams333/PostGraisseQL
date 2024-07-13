@@ -40,17 +40,22 @@ namespace engine {
 	class Page {
 	public:
 		const static size_t PAGE_SIZE = 4096;
+		constexpr const static double MIN_FREE_SPACE_AFTER_INSERT = PAGE_SIZE * 0.1;
+		const static size_t LINE_POINTER_SIZE = 2;
 		typedef struct {
 			uint8_t pdFlags;
 			uint16_t pdLower;
 			uint16_t pdUpper;
 			uint16_t pdSpecial;
 		} Header;
+		const static uint8_t FLAG_PAGE_FULL = 0b00000001;
 
 		static uint8_t *getDefaultPage();
 
 	private:
 		uint8_t *_data;
+
+		size_t _getFreeSpaceSize() const;
 
 	public:
 		Page();
@@ -63,5 +68,8 @@ namespace engine {
 
 		uint8_t* data();
 		Header* header() const { return (Header*)_data; };
+
+		bool canTupleFit(size_t tupleSize) const;
+		void insertTuple(const uint8_t* tuple, size_t tupleSize);
 	};
 };

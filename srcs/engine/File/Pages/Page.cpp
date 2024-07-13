@@ -38,3 +38,39 @@ uint8_t *Page::data() {
 	}
 	return _data;
 }
+
+size_t Page::_getFreeSpaceSize() const {
+	return header()->pdUpper - header()->pdLower;
+}
+
+bool Page::canTupleFit(size_t tupleSize) const {
+	Header *header = (Header*)_data;
+	if (header->pdFlags & FLAG_PAGE_FULL) {
+		return false;
+	}
+	size_t usedSpace = tupleSize + LINE_POINTER_SIZE;
+	size_t freeSpace = _getFreeSpaceSize();
+	if (freeSpace < usedSpace) {
+		return false;
+	}
+	size_t freeSpaceAfterInsert = freeSpace - usedSpace;
+	if (freeSpaceAfterInsert < MIN_FREE_SPACE_AFTER_INSERT) {
+		return false;
+	}
+	return true;
+}
+
+void Page::insertTuple(const uint8_t* tuple, size_t tupleSize) {
+	// not optimal, we dont have to call insertTuple if canTupleFit is false
+	// TODO: remove this check, just used for programming
+	if (!canTupleFit(tupleSize)) {
+		throw std::runtime_error("Tuple does not fit in page");
+	}
+	Header *header = (Header*)_data;
+	uint16_t *linePointer = (uint16_t*)(_data + header->pdLower);
+	uint8_t *tupleDataPointer = _data + header->pdUpper - tupleSize;
+	memcpy(tupleDataPointer, tuple, tupleSize);
+	*linePointer = tupleDataPointer - _data;
+	header->pdLower += LINE_POINTER_SIZE;
+	header->pdUpper -= tupleSize;
+}
