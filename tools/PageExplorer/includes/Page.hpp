@@ -4,6 +4,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <unistd.h>
+#include <vector>
 
 class Page {
 public:
@@ -14,6 +15,7 @@ public:
 		uint16_t pdUpper;
 		uint16_t pdSpecial;
 	} Header;
+	const static uint8_t FLAG_PAGE_FULL = 0b00000001;
 private:
 	uint8_t* data;
 public:
@@ -23,4 +25,8 @@ public:
 	~Page();
 
 	Header* getHeader() { return (Header*)data; }
+
+	std::vector<uint16_t> getLinePointers();
+
+	uint8_t* getTuple(uint16_t linePointer, uint16_t nextLinePointer);
 };

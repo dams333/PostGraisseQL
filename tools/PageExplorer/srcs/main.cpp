@@ -28,9 +28,11 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 	Page page = Page(fd, pageIdx);
+
 	Page::Header* header = page.getHeader();
 	std::cout << "======== Header (size: " << sizeof(Page::Header) << ") ========" << std::endl;
 	std::cout << "pdFlags: " << (int)header->pdFlags << std::endl;
+	std::cout << "\tPage full: " << (header->pdFlags & Page::FLAG_PAGE_FULL ? "yes" : "no") << std::endl;
 	std::cout << "pdLower: " << header->pdLower << std::endl;
 	std::cout << "\t After header: " << header->pdLower - sizeof(Page::Header) << std::endl;
 	std::cout << "pdUpper: " << header->pdUpper << std::endl;
@@ -38,5 +40,27 @@ int main(int argc, char** argv) {
 	std::cout << "\tAfter pdLower (free space): " << header->pdUpper - header->pdLower << std::endl;
 	std::cout << "pdSpecial: " << header->pdSpecial << std::endl;
 	std::cout << "\tSize:" << Page::PAGE_SIZE - header->pdSpecial << std::endl;
+
+	std::vector<uint16_t> linePointers = page.getLinePointers();
+	std::cout << "======== Line pointers (size: " << linePointers.size() << ") ========" << std::endl;
+	for (size_t i = 0; i < linePointers.size(); i++) {
+		std::cout << "Line pointer " << i << ": " << linePointers[i] << std::endl;
+	}
+
+	for (size_t i = 0; i < linePointers.size(); i++) {
+		uint16_t linePointer = linePointers[i];
+		uint16_t nextLinePointer = i == 0 ? header->pdSpecial : linePointers[i - 1];
+		std::cout << "======== Tuple " << i << " ========" << std::endl;
+		std::cout << "Begin: " << linePointer << std::endl;
+		std::cout << "End: " << nextLinePointer << std::endl;
+		std::cout << "Size: " << nextLinePointer - linePointer << std::endl;
+		uint8_t* tuple = page.getTuple(linePointer, nextLinePointer);
+		std::cout << "Value: ";
+		for (size_t j = 0; j < nextLinePointer - linePointer; j++) {
+			std::cout << (int)tuple[j] << " ";
+		}
+		std::cout << std::endl;
+		free(tuple);
+	}
 	return 0;
 }

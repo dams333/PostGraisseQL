@@ -26,3 +26,20 @@ Page Page::operator=(const Page& other) {
 Page::~Page() {
 	delete[] data;
 }
+
+std::vector<uint16_t> Page::getLinePointers() {
+	std::vector<uint16_t> pointers;
+	Header* header = getHeader();
+	uint16_t* linePtr = (uint16_t*)(data + sizeof(Header));
+	while ((uint8_t*)linePtr < data + header->pdLower) {
+		pointers.push_back(*linePtr);
+		linePtr++;
+	}
+	return pointers;
+}
+
+uint8_t* Page::getTuple(uint16_t linePointer, uint16_t tupleEnd) {
+	uint8_t* tuple = (uint8_t*)malloc(tupleEnd - linePointer);
+	memcpy(tuple, data + linePointer, tupleEnd - linePointer);
+	return tuple;
+}
