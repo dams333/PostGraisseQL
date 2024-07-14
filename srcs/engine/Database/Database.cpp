@@ -101,11 +101,32 @@ Database::~Database() {
 	}
 }
 
-void Database::createTable(std::string name) {
+void Database::createTable(std::string name, std::vector<Database::PgStructure> pgStructures) {
 	if (std::find_if(tables.begin(), tables.end(), [&name](Table* table) { return table->getName() == name; }) != tables.end()) {
 		throw std::runtime_error("Table already exists");
 	}
-	tables.push_back(Table::create(folderPath, name, filesManager));
+	Table *table = Table::create(folderPath, name, filesManager);
+	Table *pgStructureTable = getTable(Table::PG_STRUCTURE_TABLE_NAME);
+	for (const auto& pgStructure : pgStructures) {
+		switch (pgStructure.type) {
+			case ITupleElementHandler::INT:
+				table->addFieldHandler(new IntTupleElementHandler());
+				break;
+			case ITupleElementHandler::STRING:
+				table->addFieldHandler(new StringTupleElementHandler(pgStructure.size));
+				break;
+			default:
+				throw std::runtime_error("Unknown type");
+		}
+		std::vector<void *> tuple;
+		tuple.push_back(new std::string(pgStructure.name));
+		tuple.push_back(new std::string(name));
+		tuple.push_back(new int32_t(pgStructure.index));
+		tuple.push_back(new int32_t(pgStructure.type));
+		tuple.push_back(new int32_t(pgStructure.size));
+		pgStructureTable->insertTuple(tuple);
+	}
+	tables.push_back(table);
 }
 
 Table* Database::getTable(std::string name) {

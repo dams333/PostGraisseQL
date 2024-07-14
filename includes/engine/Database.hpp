@@ -35,7 +35,7 @@ namespace engine {
 
 		FilesManager& getFilesManager() { return *filesManager; }
 
-		void createTable(std::string name);
+		void createTable(std::string name, std::vector<Database::PgStructure> pgStructures);
 		Table* getTable(std::string name);
 	};
 };
