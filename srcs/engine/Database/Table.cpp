@@ -37,10 +37,6 @@ Table::Table(File *file, std::string name, FilesManager *filesManager) : file(fi
 	#ifdef DEBUG_DB
 		std::cout << "DB | Table " << name << " created" << std::endl;
 	#endif
-
-	//TODO: remove hardcoded structure
-	structure.push_back(new IntTupleElementHandler());
-	structure.push_back(new StringTupleElementHandler(255));
 }
 
 Table::Table(const Table& other) {
