@@ -138,6 +138,7 @@ size_t File::getOrCreatePageForTuple(size_t tupleSize) {
 			return i;
 		}
 	}
+	// TODO: FIX when creating page, it does not works. But at next, when getted, it works
 	appendEmptyPage();
 	return _pageCount - 1;
 }

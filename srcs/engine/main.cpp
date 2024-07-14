@@ -40,36 +40,32 @@ int main() {
 		// db.createTable("user", pgStructures);
 
 
-		// Table* table = db.getTable("user");
-
-		// std::vector<void *> tuple;
-		// tuple.push_back(new int32_t(1));
-		// tuple.push_back(new std::string("John Doe"));
-		// tuple.push_back(new int32_t(25));
-		// table->insertTuple(tuple);
-
-		// std::vector<void *> tuple2;
-		// tuple2.push_back(new int32_t(2));
-		// tuple2.push_back(new std::string("Jane Doe"));
-		// tuple2.push_back(new int32_t(24));
-		// table->insertTuple(tuple2);
-
-
 		Table* table = db.getTable("user");
-		bool restart = true;
-		while (true) {
-			std::vector<void *> tuple = table->iterateTuple(restart);
-			restart = false;
-			if (tuple.empty()) {
-				break;
-			}
-			std::cout << "idx: " << *(int32_t*)tuple[0] << std::endl;
-			std::cout << "name: " << *(std::string*)tuple[1] << std::endl;
-			std::cout << "age: " << *(int32_t*)tuple[2] << std::endl << std::endl;
-			delete (int32_t*)tuple[0];
-			delete (std::string*)tuple[1];
-			delete (int32_t*)tuple[2];
+
+		for (int i = 0; i < 100; i++) {
+			std::vector<void *> tuple;
+			tuple.push_back(new int32_t(i));
+			tuple.push_back(new std::string("John Doe"));
+			tuple.push_back(new int32_t(25));
+			table->insertTuple(tuple);
 		}
+
+
+		// Table* table = db.getTable("user");
+		// bool restart = true;
+		// while (true) {
+		// 	std::vector<void *> tuple = table->iterateTuple(restart);
+		// 	restart = false;
+		// 	if (tuple.empty()) {
+		// 		break;
+		// 	}
+		// 	std::cout << "idx: " << *(int32_t*)tuple[0] << std::endl;
+		// 	std::cout << "name: " << *(std::string*)tuple[1] << std::endl;
+		// 	std::cout << "age: " << *(int32_t*)tuple[2] << std::endl << std::endl;
+		// 	delete (int32_t*)tuple[0];
+		// 	delete (std::string*)tuple[1];
+		// 	delete (int32_t*)tuple[2];
+		// }
 
 	} catch (const std::exception& e) {
 		std::cerr << "================= FATAL =================" << std::endl;
