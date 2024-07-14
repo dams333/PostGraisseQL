@@ -11,8 +11,12 @@
 #include "engine/FilesManager.hpp"
 
 /*
-	For now, all tables use this format:
-	|index: int(32)|data: string(255)|
+	pg_structure table hardcoded architecture:
+		- name: string (column name)
+		- table: string (table name)
+		- index: int32 (column index in table)
+		- type: int32 (column type: ITupleElementHandler::Type)
+		- size: int32 (column size)
 */
 
 namespace engine {
