@@ -16,13 +16,21 @@ int main() {
 		Database db("database");
 
 		// db.createTable("pg_structure");
-		// Table* table = db.getTable("table1");
-		// std::vector<void *> tuple;
-		// tuple.push_back(new int(42));
-		// tuple.push_back(new std::string("Hello, world!"));
-		// table->insertTuple(tuple);
-		// delete (int*)tuple[0];
-		// delete (std::string*)tuple[1];
+		Table* table = db.getTable("table1");
+		bool restart = true;
+		while (true) {
+			std::vector<void *> tuple = table->iterateTuple(restart);
+			restart = false;
+			if (tuple.empty()) {
+				break;
+			}
+			std::cout << "Tuple: ";
+			std::cout << *(int*)tuple[0] << " ";
+			std::cout << *(std::string*)tuple[1] << " ";
+			std::cout << std::endl;
+			delete (int*)tuple[0];
+			delete (std::string*)tuple[1];
+		}
 	} catch (const std::exception& e) {
 		std::cerr << "================= FATAL =================" << std::endl;
 		std::cerr << "ERROR: " << e.what() << std::endl;

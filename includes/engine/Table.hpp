@@ -40,5 +40,6 @@ namespace engine {
 		File* getFile() const { return file; };
 
 		void insertTuple(std::vector<void *> tuple);
+		std::vector<void *> iterateTuple(bool restart);
 	};
 };

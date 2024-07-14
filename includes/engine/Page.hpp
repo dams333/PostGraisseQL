@@ -72,5 +72,6 @@ namespace engine {
 		Header* header() const { return (Header*)_data; };
 
 		void insertTuple(const uint8_t* tuple, size_t tupleSize);
+		uint8_t* iterateTuple(size_t tupleIndex);
 	};
 };

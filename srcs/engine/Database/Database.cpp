@@ -8,7 +8,8 @@ Database::Database(std::string folderPath) : folderPath(folderPath), filesManage
 	if (!std::filesystem::exists(pgStructurePath)) {
 		throw std::runtime_error("Database does not exist");
 	}
-	tables.push_back(new Table(pgStructurePath, Table::PG_STRUCTURE_TABLE_NAME, filesManager));
+	Table *pgStructure = new Table(pgStructurePath, Table::PG_STRUCTURE_TABLE_NAME, filesManager);
+	tables.push_back(pgStructure);
 	
 	for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
 		if (entry.path().extension() == ".table" && entry.path().stem() != Table::PG_STRUCTURE_TABLE_NAME) {

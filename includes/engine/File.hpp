@@ -45,6 +45,7 @@ namespace engine {
 		~File();
 
 		std::string getPath() const { return _path; }
+		uint32_t getPageCount() const { return _pageCount; }
 
 		void readFromFile(size_t pageIndex, uint8_t* buffer);
 		void writeToFile(size_t pageIndex, uint8_t* buffer);

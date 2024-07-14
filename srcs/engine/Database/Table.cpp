@@ -27,6 +27,10 @@ Table::Table(std::string fileName, std::string name, FilesManager *filesManager)
 		structure.push_back(new IntTupleElementHandler());
 		// size
 		structure.push_back(new IntTupleElementHandler());
+	} else {
+		//TODO: remove hardcoded structure
+		structure.push_back(new IntTupleElementHandler());
+		structure.push_back(new StringTupleElementHandler(255));
 	}
 }
 
@@ -36,6 +40,7 @@ Table::Table(File *file, std::string name, FilesManager *filesManager) : file(fi
 		std::cout << "DB | Table " << name << " created" << std::endl;
 	#endif
 
+	//TODO: remove hardcoded structure
 	structure.push_back(new IntTupleElementHandler());
 	structure.push_back(new StringTupleElementHandler(255));
 }
@@ -112,4 +117,52 @@ void Table::insertTuple(std::vector<void *> tuple) {
 	}
 	page->insertTuple(tupleBuffer, tupleSize);
 	delete[] tupleBuffer;
+}
+
+std::vector<void *> Table::iterateTuple(bool restart) {
+	std::vector<void *> tuple;
+	static size_t pageIndex = 0;
+	static size_t tupleIndex = 0;
+	if (restart) {
+		pageIndex = 0;
+		tupleIndex = 0;
+	}
+	Page *page = filesManager->getPage(file, pageIndex);
+	
+	uint8_t *tupleData = page->iterateTuple(tupleIndex);
+	tupleIndex++;
+	if (tupleData == nullptr) {
+		pageIndex++;
+		tupleIndex = 0;
+		if (pageIndex >= file->getPageCount()) {
+			return tuple;
+		}
+		page = filesManager->getPage(file, pageIndex);
+		tupleData = page->iterateTuple(tupleIndex);
+	}
+
+	size_t offset = 0;
+	for (size_t i = 0; i < structure.size(); i++) {
+		switch (structure[i]->getType()) {
+			case ITupleElementHandler::INT: {
+				IntTupleElementHandler *intHandler = dynamic_cast<IntTupleElementHandler *>(structure[i]);
+				int32_t value;
+				offset += intHandler->parse(tupleData + offset, value);
+				tuple.push_back(new int32_t(value));
+				break;
+			}
+			case ITupleElementHandler::STRING: {
+				StringTupleElementHandler *stringHandler = dynamic_cast<StringTupleElementHandler *>(structure[i]);
+				std::string value;
+				offset += stringHandler->parse(tupleData + offset, value);
+				tuple.push_back(new std::string(value));
+				break;
+			}
+			default: {
+				throw std::runtime_error("Unknown tuple element type");
+			}
+		}
+	}
+
+	return tuple;
 }
