@@ -3,6 +3,8 @@
 
 using namespace engine;
 
+const std::string Table::PG_STRUCTURE_TABLE_NAME = "pg_structure";
+
 Table* Table::create(std::string folderPath, std::string name, FilesManager *filesManager) {
 	std::string fileName = folderPath + "/" + name + ".table";
 	File *file = File::create(fileName, File::READ_FLAG | File::WRITE_FLAG);
@@ -16,8 +18,16 @@ Table::Table(std::string fileName, std::string name, FilesManager *filesManager)
 		std::cout << "DB | Table " << name << " loaded from '" << fileName << "'" << std::endl;
 	#endif
 
-	structure.push_back(new IntTupleElementHandler());
-	structure.push_back(new StringTupleElementHandler(255));
+	if (name == PG_STRUCTURE_TABLE_NAME) {
+		// name
+		structure.push_back(new StringTupleElementHandler(255));
+		// index
+		structure.push_back(new IntTupleElementHandler());
+		// type
+		structure.push_back(new IntTupleElementHandler());
+		// size
+		structure.push_back(new IntTupleElementHandler());
+	}
 }
 
 Table::Table(File *file, std::string name, FilesManager *filesManager) : file(file), name(name), filesManager(filesManager) {

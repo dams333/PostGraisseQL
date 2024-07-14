@@ -6,8 +6,8 @@ namespace engine {
 	class ITupleElementHandler {
 	public:
 		typedef enum {
-			INT,
-			STRING
+			INT = 0,
+			STRING = 1
 		} Type;
 
 		virtual Type getType() const = 0;

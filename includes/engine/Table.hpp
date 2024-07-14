@@ -18,6 +18,7 @@
 namespace engine {
 	class Table {
 	public:
+		static const std::string PG_STRUCTURE_TABLE_NAME;
 		static Table* create(std::string folderPath, std::string name, FilesManager *filesManager);
 
 	private:

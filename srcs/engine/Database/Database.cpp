@@ -4,11 +4,19 @@
 using namespace engine;
 
 Database::Database(std::string folderPath) : folderPath(folderPath), filesManager(new FilesManager()) {	
+	std::string pgStructurePath = folderPath + "/" + Table::PG_STRUCTURE_TABLE_NAME + ".table";
+	if (!std::filesystem::exists(pgStructurePath)) {
+		throw std::runtime_error("Database does not exist");
+	}
+	tables.push_back(new Table(pgStructurePath, Table::PG_STRUCTURE_TABLE_NAME, filesManager));
+	
 	for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
-		if (entry.path().extension() == ".table") {
+		if (entry.path().extension() == ".table" && entry.path().stem() != Table::PG_STRUCTURE_TABLE_NAME) {
 			tables.push_back(new Table(entry.path().string(), entry.path().stem().string(), filesManager));
 		}
 	}
+
+	//TODO: Load structures from pg_structure
 
 	#ifdef DEBUG_DB
 		std::cout << "DB | Database loaded from '" << folderPath << "'" << std::endl;
