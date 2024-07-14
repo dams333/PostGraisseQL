@@ -39,6 +39,8 @@ namespace engine {
 		std::string getName() const { return name; };
 		File* getFile() const { return file; };
 
+		void addFieldHandler(ITupleElementHandler *handler) { structure.push_back(handler); };
+
 		void insertTuple(std::vector<void *> tuple);
 		std::vector<void *> iterateTuple(bool restart);
 	};

@@ -15,7 +15,7 @@ int main() {
 	try {
 		Database db("database");
 
-		// db.createTable("pg_structure");
+		// db.createTable("table1");
 		Table* table = db.getTable("table1");
 		bool restart = true;
 		while (true) {

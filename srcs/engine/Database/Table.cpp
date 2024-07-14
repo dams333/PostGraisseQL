@@ -21,16 +21,14 @@ Table::Table(std::string fileName, std::string name, FilesManager *filesManager)
 	if (name == PG_STRUCTURE_TABLE_NAME) {
 		// name
 		structure.push_back(new StringTupleElementHandler(255));
+		// table
+		structure.push_back(new StringTupleElementHandler(255));
 		// index
 		structure.push_back(new IntTupleElementHandler());
 		// type
 		structure.push_back(new IntTupleElementHandler());
 		// size
 		structure.push_back(new IntTupleElementHandler());
-	} else {
-		//TODO: remove hardcoded structure
-		structure.push_back(new IntTupleElementHandler());
-		structure.push_back(new StringTupleElementHandler(255));
 	}
 }
 
