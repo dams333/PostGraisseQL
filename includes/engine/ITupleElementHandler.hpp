@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cstring>
 
 namespace engine {
 	class ITupleElementHandler {

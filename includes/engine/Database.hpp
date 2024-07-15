@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <iostream>
 #include <map>
+#include <algorithm>
 
 #include "engine/Table.hpp"
 #include "engine/FilesManager.hpp"
