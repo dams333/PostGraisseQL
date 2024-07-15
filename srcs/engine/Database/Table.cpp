@@ -86,8 +86,23 @@ void Table::insertTuple(std::vector<void *> tuple) {
 			}
 		}
 	}
-	size_t pageIndex = file->getOrCreatePageForTuple(tupleSize);
+
+	size_t pageIndex = 0;
+	while (pageIndex < file->getPageCount()) {
+		Page *page = filesManager->getPage(file, pageIndex);
+		if (page->canTupleFitInPage(tupleSize, page->header())) {
+			delete page;
+			break;
+		}
+		delete page;
+		pageIndex++;
+	}
+	if (pageIndex >= file->getPageCount()) {
+		file->appendEmptyPage();
+	}
+
 	Page *page = filesManager->getMutablePage(file, pageIndex);
+
 	uint8_t *tupleBuffer = new uint8_t[tupleSize];
 	size_t offset = 0;
 	for (size_t i = 0; i < tuple.size(); i++) {

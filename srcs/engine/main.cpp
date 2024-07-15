@@ -37,12 +37,12 @@ int main() {
 		// age.size = 0;
 		// pgStructures.push_back(age);
 
-		// db.createTable("user", pgStructures);
+		// db.createTable("user2", pgStructures);
 
 
-		Table* table = db.getTable("user");
+		Table* table = db.getTable("user2");
 
-		for (int i = 0; i < 194; i++) {
+		for (int i = 0; i < 250; i++) {
 			std::vector<void *> tuple;
 			tuple.push_back(new int32_t(i));
 			tuple.push_back(new std::string("John Doe"));
@@ -54,7 +54,7 @@ int main() {
 		}
 
 
-		// Table* table = db.getTable("user");
+		// Table* table = db.getTable("user2");
 		// bool restart = true;
 		// while (true) {
 		// 	std::vector<void *> tuple = table->iterateTuple(restart);
