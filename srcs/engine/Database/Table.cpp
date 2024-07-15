@@ -111,6 +111,7 @@ void Table::insertTuple(std::vector<void *> tuple) {
 	}
 	page->insertTuple(tupleBuffer, tupleSize);
 	delete[] tupleBuffer;
+	delete page;
 }
 
 std::vector<void *> Table::iterateTuple(bool restart) {
@@ -128,6 +129,7 @@ std::vector<void *> Table::iterateTuple(bool restart) {
 	if (tupleData == nullptr) {
 		pageIndex++;
 		tupleIndex = 0;
+		delete page;
 		if (pageIndex >= file->getPageCount()) {
 			return tuple;
 		}
@@ -157,6 +159,9 @@ std::vector<void *> Table::iterateTuple(bool restart) {
 			}
 		}
 	}
+
+	delete page;
+	delete[] tupleData;
 
 	return tuple;
 }

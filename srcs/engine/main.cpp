@@ -42,12 +42,15 @@ int main() {
 
 		Table* table = db.getTable("user");
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 194; i++) {
 			std::vector<void *> tuple;
 			tuple.push_back(new int32_t(i));
 			tuple.push_back(new std::string("John Doe"));
 			tuple.push_back(new int32_t(25));
 			table->insertTuple(tuple);
+			delete (int32_t*)tuple[0];
+			delete (std::string*)tuple[1];
+			delete (int32_t*)tuple[2];
 		}
 
 

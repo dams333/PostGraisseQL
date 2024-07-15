@@ -125,6 +125,11 @@ void Database::createTable(std::string name, std::vector<Database::PgStructure> 
 		tuple.push_back(new int32_t(pgStructure.type));
 		tuple.push_back(new int32_t(pgStructure.size));
 		pgStructureTable->insertTuple(tuple);
+		delete (std::string*)tuple[0];
+		delete (std::string*)tuple[1];
+		delete (int32_t*)tuple[2];
+		delete (int32_t*)tuple[3];
+		delete (int32_t*)tuple[4];
 	}
 	tables.push_back(table);
 }
